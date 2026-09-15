@@ -11,6 +11,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:plus_and_minus/main.dart';
 
 void main() {
+  testWidgets('Counter starts at 0', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    expect(find.text('0'), findsOneWidget);
+  });
+
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
@@ -26,5 +32,79 @@ void main() {
     // Verify that our counter has incremented.
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
+  });
+
+  testWidgets('Counter increments multiple times', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+
+    expect(find.text('3'), findsOneWidget);
+  });
+
+  testWidgets('Counter decrements smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    await tester.tap(find.byIcon(Icons.remove));
+    await tester.pump();
+
+    // Decrementing from 0 should go negative.
+    expect(find.text('-1'), findsOneWidget);
+  });
+
+  testWidgets('Counter decrements after incrementing', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.remove));
+    await tester.pump();
+
+    expect(find.text('1'), findsOneWidget);
+  });
+
+  testWidgets('Reset button resets counter to 0', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    expect(find.text('2'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.exposure_zero));
+    await tester.pump();
+
+    expect(find.text('0'), findsOneWidget);
+  });
+
+  testWidgets('Reset button resets counter from negative value', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    await tester.tap(find.byIcon(Icons.remove));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.remove));
+    await tester.pump();
+    expect(find.text('-2'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.exposure_zero));
+    await tester.pump();
+
+    expect(find.text('0'), findsOneWidget);
+  });
+
+  testWidgets('All three buttons are present', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    expect(find.byTooltip('Increment'), findsOneWidget);
+    expect(find.byTooltip('Decrement'), findsOneWidget);
+    expect(find.byTooltip('Reset to zero'), findsOneWidget);
   });
 }
